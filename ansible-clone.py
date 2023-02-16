@@ -94,7 +94,7 @@ def generate_playbook(config_paths, playbook_out):
 def main():
     # The main function.
 
-    parser = argparse.ArgumentParser(description='Process input file and write to output file')
+    parser = argparse.ArgumentParser(description='Options for ansible-clone')
     parser.add_argument('-c', dest='input_file', type=str, help='INI file containing config file paths')
     parser.add_argument('-f', dest='output_file', type=str, help='Output playbook file')
 
