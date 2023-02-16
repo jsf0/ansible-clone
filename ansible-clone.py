@@ -1,5 +1,6 @@
 #!/usr/bin/env python3.9
 
+import argparse
 import configparser
 import os
 import distro
@@ -22,10 +23,10 @@ def generate_package_tasks(installed_packages):
     package_tasks.append(f"       state: present\n")
     return ' '.join(package_tasks)
 
-def read_config_files():
+def read_config_files(config_paths):
     # Read configuration files from the .ini file.
     config = configparser.ConfigParser()
-    config.read('config_files.ini')
+    config.read(config_paths)
     return config
 
 def generate_config_tasks(config):
@@ -68,18 +69,18 @@ def generate_service_tasks(enabled_services):
     return service_tasks
 
 
-def generate_playbook():
+def generate_playbook(config_paths, playbook_out):
     # Generate the Ansible playbook.
     installed_packages = get_installed_packages()
     package_tasks = generate_package_tasks(installed_packages)
 
-    config = read_config_files()
+    config = read_config_files(config_paths)
     config_tasks = generate_config_tasks(config)
 
     enabled_services = get_enabled_services()
     service_tasks = generate_service_tasks(enabled_services)
 
-    with open('playbook.yml', 'w') as f:
+    with open(playbook_out, 'w') as f:
         f.write(f'''---
 - hosts: localhost
   become: yes
@@ -92,7 +93,14 @@ def generate_playbook():
 
 def main():
     # The main function.
-    generate_playbook()
+
+    parser = argparse.ArgumentParser(description='Process input file and write to output file')
+    parser.add_argument('-c', dest='input_file', type=str, help='INI file containing config file paths')
+    parser.add_argument('-f', dest='output_file', type=str, help='Output playbook file')
+
+    args = parser.parse_args()
+
+    generate_playbook(args.input_file, args.output_file)
 
 if __name__ == '__main__':
     main()
