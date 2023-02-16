@@ -24,7 +24,7 @@ The contents of the files at these paths will be included in the resulting playb
 
 ### Supporting new operating systems
 
-Support for new running this on other oeprating systems can be added fairly easily. You will need to modify the following functions: 
+Support for new running this on other operating systems can be added fairly easily. You will need to modify the following functions: 
 
 `get_installed_packages()`
 
