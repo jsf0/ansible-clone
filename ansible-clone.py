@@ -101,12 +101,12 @@ def main():
     # The main function.
 
     parser = argparse.ArgumentParser(description='Options for ansible-clone')
-    parser.add_argument('-c', dest='input_file', type=str, help='INI file containing config file paths')
-    parser.add_argument('-f', dest='output_file', type=str, help='Output playbook file')
+    parser.add_argument('-c', dest='config_paths', required=True, type=str, help='INI file containing config file paths')
+    parser.add_argument('-f', dest='output_file', required=True, type=str, help='Output playbook file')
 
     args = parser.parse_args()
 
-    generate_playbook(args.input_file, args.output_file)
+    generate_playbook(args.config_paths, args.output_file)
 
 if __name__ == '__main__':
     main()
