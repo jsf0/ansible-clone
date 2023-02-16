@@ -31,3 +31,10 @@ Support for new running this on other oeprating systems can be added fairly easi
 `get_enabled_services()`
 
 These would need the appropriate commands added to them to grab the list of installed packages and enabled services respectively for the current OS. 
+
+### TODO
+
+- [] Write a man page
+- [] Fix all the roff formatting in that man page that I will have messed up the first time
+- [] Add some command line flags to optionally disable each function (e.g, ignore packages, services, or config files)
+- [] Implement support for Linux. Will need to include various package managers, and systemctl to grab service info
