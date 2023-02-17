@@ -33,7 +33,7 @@ def read_config_files(config_paths):
     return config
 
 def generate_config_tasks(config):
-    # Generate a list of Ansible tasks to copy the specified config files.
+    # Generate a task to copy the specified config files.
     tasks = []
     for section in config.sections():
         file_path = os.path.expanduser(config[section]['path'])
