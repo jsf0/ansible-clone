@@ -38,3 +38,5 @@ These would need the appropriate commands added to them to grab the list of inst
 - [ ] Fix all the roff formatting in that man page that I will have messed up the first time
 - [ ] Add some command line flags to optionally disable each function (e.g, ignore packages, services, or config files)
 - [ ] Implement support for Linux. Will need to include various package managers, and systemctl to grab service info
+- [ ] Add support for including variables such as IP address, hostname, etc. 
+- [ ] Add a Makefile
