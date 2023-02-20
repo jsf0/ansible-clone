@@ -8,7 +8,7 @@ import subprocess
 import textwrap
 
 def get_installed_packages():
-    # Get a list of installed packages using the specified package manager.
+    # Get a list of installed packages. Only including manually installed, not dependencies
     if distro.id() == 'freebsd':
         result = subprocess.run(['pkg', 'query', '-e', '%#r = 0', '%n'], capture_output=True, text=True)
     elif distro.id() == 'openbsd':
@@ -17,7 +17,7 @@ def get_installed_packages():
     return [line.split(' ')[0] for line in result.stdout.splitlines()]
 
 def generate_package_tasks(installed_packages):
-    # Generate a list of Ansible tasks to install the specified packages.
+    # Generate a task to install the specified packages. Ansible will choose the package manager
     ansible_pkg_mgr = 'ansible.builtin.package'
     package_tasks = []
     package_tasks.append(f"- name: Install packages\n      {ansible_pkg_mgr}:\n        name:\n")
@@ -33,7 +33,7 @@ def read_config_files(config_paths):
     return config
 
 def generate_config_tasks(config):
-    # Generate a task to copy the specified config files.
+    # Generate a task to copy the specified config files to their paths.
     tasks = []
     for section in config.sections():
         file_path = os.path.expanduser(config[section]['path'])
@@ -50,7 +50,7 @@ def generate_config_tasks(config):
     return tasks
 
 def get_enabled_services():
-    # Find enabled services and ensure the playbook enables them
+    # Find enabled services. Note that this will find ALL enabled services, including default ones
     if distro.id() == 'freebsd':
         output = subprocess.check_output(['service', '-e'])
 
@@ -64,11 +64,11 @@ def get_enabled_services():
     # Filter out any empty lines and parse the service names
     services = [line.split()[0] for line in lines if line.strip()]
 
-    # Strip the "/etc/rc.d/" prefix from the service names
+    # Strip the "/etc/rc.d/" prefix from the service names (needed for FreeBSD)
     return [s.replace('/etc/rc.d/', '') for s in services]
 
 def generate_service_tasks(enabled_services):
-    """Generate a list of Ansible tasks to enable the specified services."""
+    # Generate a list of Ansible tasks to enable the specified services.
     service_tasks = []
     for service in enabled_services:
         service_tasks.append(f"    - name: Enable {service} service\n      service:\n        name: {service}\n        enabled: yes\n")
@@ -98,7 +98,7 @@ def generate_playbook(config_paths, playbook_out):
 ''')
 
 def main():
-    # The main function.
+    # Will eventually want to make these arguments optional
 
     parser = argparse.ArgumentParser(description='Options for ansible-clone')
     parser.add_argument('-c', dest='config_paths', required=True, type=str, help='INI file containing config file paths')
