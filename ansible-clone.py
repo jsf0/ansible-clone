@@ -7,6 +7,12 @@ import distro
 import subprocess
 import textwrap
 
+def get_become_method():
+    if distro.id() == 'openbsd':
+        return "doas"
+    else:
+        return "sudo"
+
 def get_installed_packages():
     # Get a list of installed packages. Only including manually installed, not dependencies
     if distro.id() == 'freebsd':
@@ -77,6 +83,8 @@ def generate_service_tasks(enabled_services):
 
 def generate_playbook(config_paths, playbook_out):
     # Generate the Ansible playbook.
+    become_method = get_become_method()
+
     installed_packages = get_installed_packages()
     package_tasks = generate_package_tasks(installed_packages)
 
@@ -90,6 +98,7 @@ def generate_playbook(config_paths, playbook_out):
         f.write(f'''---
 - hosts: localhost
   become: yes
+  become_method: {become_method}
 
   tasks:
     {package_tasks}
