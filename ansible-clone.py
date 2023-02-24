@@ -7,6 +7,8 @@ import distro
 import subprocess
 import textwrap
 
+from pwd import getpwuid
+
 def get_become_method():
     if distro.id() == 'openbsd':
         return "doas"
@@ -43,6 +45,10 @@ def generate_config_tasks(config):
     tasks = []
     for section in config.sections():
         file_path = os.path.expanduser(config[section]['path'])
+        file_stats = os.stat(file_path)
+        file_owner = getpwuid(file_stats.st_uid).pw_name
+        file_perms = file_stats.st_mode
+        
         with open(file_path) as f:
             content = f.read()
         # Escape the file content using YAML block scalar style
@@ -50,6 +56,8 @@ def generate_config_tasks(config):
         task = f"    - name: Copy {file_path}\n" \
                f"      copy:\n" \
                f"        dest: {file_path}\n" \
+               f"        owner: {file_owner}\n" \
+               f"        mode: {file_perms}\n" \
                f"        content: |\n" \
                f"{escaped_content}\n"
         tasks.append(task)
