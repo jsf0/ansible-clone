@@ -19,6 +19,7 @@ def get_installed_packages():
 
     apt_distros = ('debian', 'ubuntu', 'linuxmint')
     pacman_distros = ('arch')
+    dnf_distros = ('centos', 'fedora', 'rhel')
 
     # Get a list of installed packages. Only including manually installed, not dependencies
     if distro.id() == 'freebsd':
@@ -29,6 +30,8 @@ def get_installed_packages():
         result = subprocess.run(['apt-mark', 'showmanual'], capture_output=True, text=True)
     elif distro.id() in pacman_distros:
         result = subprocess.run(['pacman', '-Q', '-e', '-t', '-q'], capture_output=True, text=True)
+    elif distro.id() in dnf_distros:
+        result = subprocess.run(['dnf', 'repoquery', '--userinstalled', '--qf', '"%{name}"'], capture_output=True, text=True)
     
     return [line.split(' ')[0] for line in result.stdout.splitlines()]
 
@@ -73,7 +76,7 @@ def generate_config_tasks(config):
 
 
 def get_enabled_services():
-    systemd_distros = ('debian', 'ubuntu', 'linuxmint', 'arch', 'centos')
+    systemd_distros = ('debian', 'ubuntu', 'linuxmint', 'arch', 'centos', 'rhel', 'fedora')
 
     # Find enabled services. Note that this will find ALL enabled services, including default ones
     if distro.id() == 'freebsd':
