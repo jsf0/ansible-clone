@@ -21,7 +21,9 @@ def get_installed_packages():
         result = subprocess.run(['pkg', 'query', '-e', '%#r = 0', '%n'], capture_output=True, text=True)
     elif distro.id() == 'openbsd':
         result = subprocess.run(['pkg_info', '-q', '-m', '-z'], capture_output=True, text=True) 
-
+    elif distro.id() == 'debian' or 'ubuntu' or 'linuxmint':
+        result = subprocess.run(['apt-mark', 'showmanual'], capture_output=True, text=True)
+        
     return [line.split(' ')[0] for line in result.stdout.splitlines()]
 
 def generate_package_tasks(installed_packages):
@@ -63,6 +65,7 @@ def generate_config_tasks(config):
         tasks.append(task)
     return tasks
 
+
 def get_enabled_services():
     # Find enabled services. Note that this will find ALL enabled services, including default ones
     if distro.id() == 'freebsd':
@@ -71,15 +74,18 @@ def get_enabled_services():
     elif distro.id() == 'openbsd':
         output = subprocess.check_output(['rcctl', 'ls', 'on'])
 
+    elif distro.id() == 'debian' or 'ubuntu' or 'linuxmint' or 'arch' or 'centos':
+        output = subprocess.check_output(['systemctl', 'list-unit-files', '--state=enabled', '--type=service', '--no-legend'])
+
     # Convert the output to a string and split it into lines
     output_str = output.decode('utf-8')
     lines = output_str.split('\n')
 
-    # Filter out any empty lines and parse the service names
     services = [line.split()[0] for line in lines if line.strip()]
 
     # Strip the "/etc/rc.d/" prefix from the service names (needed for FreeBSD)
     return [s.replace('/etc/rc.d/', '') for s in services]
+
 
 def generate_service_tasks(enabled_services):
     # Generate a list of Ansible tasks to enable the specified services.
