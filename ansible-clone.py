@@ -23,7 +23,9 @@ def get_installed_packages():
         result = subprocess.run(['pkg_info', '-q', '-m', '-z'], capture_output=True, text=True) 
     elif distro.id() == 'debian' or 'ubuntu' or 'linuxmint':
         result = subprocess.run(['apt-mark', 'showmanual'], capture_output=True, text=True)
-        
+    elif distro.id() == 'arch':
+        result = subprocess.run(['pacman', '-Q', '-e', '-t', '-q'], capture_output=True, text=True)
+    
     return [line.split(' ')[0] for line in result.stdout.splitlines()]
 
 def generate_package_tasks(installed_packages):
