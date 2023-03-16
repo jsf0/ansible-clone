@@ -16,14 +16,18 @@ def get_become_method():
         return "sudo"
 
 def get_installed_packages():
+
+    apt_distros = ('debian', 'ubuntu', 'linuxmint')
+    pacman_distros = ('arch')
+
     # Get a list of installed packages. Only including manually installed, not dependencies
     if distro.id() == 'freebsd':
         result = subprocess.run(['pkg', 'query', '-e', '%#r = 0', '%n'], capture_output=True, text=True)
     elif distro.id() == 'openbsd':
         result = subprocess.run(['pkg_info', '-q', '-m', '-z'], capture_output=True, text=True) 
-    elif distro.id() == 'debian' or 'ubuntu' or 'linuxmint':
+    elif distro.id() in apt_distros:
         result = subprocess.run(['apt-mark', 'showmanual'], capture_output=True, text=True)
-    elif distro.id() == 'arch':
+    elif distro.id() in pacman_distros:
         result = subprocess.run(['pacman', '-Q', '-e', '-t', '-q'], capture_output=True, text=True)
     
     return [line.split(' ')[0] for line in result.stdout.splitlines()]
@@ -69,6 +73,8 @@ def generate_config_tasks(config):
 
 
 def get_enabled_services():
+    systemd_distros = ('debian', 'ubuntu', 'linuxmint', 'arch', 'centos')
+
     # Find enabled services. Note that this will find ALL enabled services, including default ones
     if distro.id() == 'freebsd':
         output = subprocess.check_output(['service', '-e'])
@@ -76,7 +82,7 @@ def get_enabled_services():
     elif distro.id() == 'openbsd':
         output = subprocess.check_output(['rcctl', 'ls', 'on'])
 
-    elif distro.id() == 'debian' or 'ubuntu' or 'linuxmint' or 'arch' or 'centos':
+    elif distro.id() in systemd_distros:
         output = subprocess.check_output(['systemctl', 'list-unit-files', '--state=enabled', '--type=service', '--no-legend'])
 
     # Convert the output to a string and split it into lines
