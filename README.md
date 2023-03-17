@@ -1,6 +1,6 @@
 # ansible-clone
 
-This Python script will create an Ansible playbook that duplicates an existing Linux or BSD system. It will figure out all the currently installed packages and running services, and will include the contents of any config files you provide it. It will then create a playbook that will install all of these pacakges, enable the same services, and copy those file contents to the same paths.
+This Python script will create an Ansible playbook that duplicates an existing Linux or BSD system. It will figure out all the currently installed packages and running services, and will include the contents of any config files you provide it. It will then create a playbook that will install all of these packages, enable the same services, and copy those file contents to the same paths.
 
 The idea is that once you have a system configured the way you like it, you just run this tool and it will create a playbook that you can use to configure another system in the same way. 
 
