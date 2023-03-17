@@ -1,8 +1,19 @@
 # ansible-clone
 
-This Python script will create an Ansible playbook that duplicates an existing system. The idea is that once you have a system configured the way you like it, you just run this tool and it will create a playbook that you can use to configure another system in the same way.
+This Python script will create an Ansible playbook that duplicates an existing Linux or BSD system. The idea is that once you have a system configured the way you like it, you just run this tool and it will create a playbook that you can use to configure another system in the same way.
 
-Currently it only supports FreeBSD and OpenBSD, and is a rough work in progress.
+Currently it supports generating playbooks on the following operating systems:
+
+ - OpenBSD
+ - FreeBSD
+ - Debian
+ - Ubuntu
+ - Linux Mint
+ - Arch Linux
+ - CentOS
+ - Fedora
+ - RHEL
+
 
 ### usage
 
@@ -30,13 +41,12 @@ Support for new running this on other operating systems can be added fairly easi
 
 `get_enabled_services()`
 
-These would need the appropriate commands added to them to grab the list of installed packages and enabled services respectively for the current OS. 
 
 ### TODO
 
 - [ ] Write a man page
 - [ ] Fix all the roff formatting in that man page that I will have messed up the first time
 - [ ] Add some command line flags to optionally disable each function (e.g, ignore packages, services, or config files)
-- [ ] Implement support for Linux. Will need to include various package managers, and systemctl to grab service info
+- [X] Implement support for Linux. Will need to include various package managers, and systemctl to grab service info
 - [ ] Add support for including variables such as IP address, hostname, etc. 
 - [ ] Add a Makefile
