@@ -17,10 +17,12 @@ Currently it supports generating playbooks on the following operating systems:
 
 ### usage
 
-This will load the file `config_file_paths.ini` and include the contents of all the config files found there in the playbook. The playbook will be written to `playbook.yml`
+To use `ansible-clone`, you provide it with an INI file containing the paths to any files whose contents you want in the playbook, and the path to the playbook you will create:
 ```
 ansible-clone -c config_file_paths.ini -f playbook.yml
 ```
+
+This command above will load the file `config_file_paths.ini` and include the contents of all the config files found there in the playbook. The playbook will be written to `playbook.yml`
 
 The file `config_file_paths.ini` here should look something like this:
 
